@@ -89,7 +89,7 @@ const SpetrumChart = () => {
     ]
   });
   useEffect(() => {
-    const starCountRef = ref(database, 'data/Spetrum');
+    const starCountRef = ref(database, 'data/Spetrum Waveform');
     onValue(starCountRef, (snapshot) => {
       const Dataset = snapshot.val();
       setData({
