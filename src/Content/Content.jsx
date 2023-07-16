@@ -5,11 +5,53 @@ import { CiTimer } from 'react-icons/ci'
 import { GiLightningFrequency } from 'react-icons/gi'
 import { FaGreaterThan } from 'react-icons/fa'
 import { FaLessThan } from 'react-icons/fa'
+import { MdShutterSpeed } from 'react-icons/md'
+import { useEffect, useState } from 'react';
+import { ref, onValue } from "firebase/database";
+import { database } from '../firebase';
 import SpetrumChart from "../Components/Chart/Spetrum"
 import Card from '../Components/CardTemplate/Card' 
 
 const Content = () => {
     const {DarkTheme} = useContext(ThemeContext)
+    const [CountOfPeak, setCountOfPeak] = useState(0);
+    const [Frequency, setFrequency] = useState(0);
+    const [LowerThreshold, setLowerThreshold] = useState(0);
+    const [UpperThreshold, setUpperThreshold] = useState(0);
+    const [RealTime, setRealTime] = useState(0);
+
+    useEffect(() => {
+        const CountOfPeak = ref(database, 'data/Count Of Peaks');
+        onValue(CountOfPeak, (snapshot) => {
+          const Data = snapshot.val();
+          setCountOfPeak(Data)
+        });
+
+        const Frequency = ref(database, 'data/Frequency (Hz)');
+        onValue(Frequency, (snapshot) => {
+          const Data = snapshot.val();
+          setFrequency(Data)
+        });
+
+        const LowerThreshold = ref(database, 'data/LowerThreshold');
+        onValue(LowerThreshold, (snapshot) => {
+          const Data = snapshot.val();
+          setLowerThreshold(Data)
+        });
+
+        const UpperThreshold = ref(database, 'data/Upper Threshold');
+        onValue(UpperThreshold, (snapshot) => {
+          const Data = snapshot.val();
+          setUpperThreshold(Data)
+        });
+
+        const RealTime = ref(database, 'data/Real Time (s)');
+        onValue(RealTime, (snapshot) => {
+          const Data = snapshot.val();
+          setRealTime(Data)
+        });
+      })
+
   return (
     <div className={`content ${DarkTheme && "dark"}`}>
         <div className="row header">
@@ -18,22 +60,22 @@ const Content = () => {
             <div className="divide"></div>
             <div className="notification">
                 <section>
-                    <p>87</p>
+                    <p>{Math.floor(RealTime / (3600*24))}</p>
                     <p><small>Days</small></p>
                 </section>
                 <span>:</span>
                 <section>
-                    <p>87</p>
+                    <p>{Math.floor(RealTime % (3600*24) / 3600)}</p>
                     <p><small>Hours</small></p>
                 </section>
                 <span>:</span>
                 <section>
-                    <p>87</p>
+                    <p>{Math.floor(RealTime % 3600 / 60)}</p>
                     <p><small>Minutes</small></p>
                 </section>
                 <span>:</span>
                 <section>
-                    <p>87</p>
+                    <p>{Math.floor(RealTime % 60)}</p>
                     <p><small>Seconds</small></p>
                 </section>
             </div>
@@ -56,9 +98,10 @@ const Content = () => {
             </svg>
         </div>
         <div className="row header">
-            <Card Icon={GiLightningFrequency} title="Frequency" value="1000 (Hz)"></Card>
-            <Card Icon={FaLessThan} title="Lower Threshold" value="150"></Card>
-            <Card Icon={FaGreaterThan} title="Upper Threshold" value="4100"></Card>
+            <Card Icon={MdShutterSpeed} title="Count Of Peak" value={CountOfPeak}></Card>
+            <Card Icon={GiLightningFrequency} title="Frequency" value={Frequency}></Card>
+            <Card Icon={FaLessThan} title="Lower Threshold" value={LowerThreshold}></Card>
+            <Card Icon={FaGreaterThan} title="Upper Threshold" value={UpperThreshold}></Card>
             <svg
                 className="bg-waves__"
                 preserveAspectRatio="none"

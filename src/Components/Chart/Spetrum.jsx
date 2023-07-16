@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useContext } from "react"
+import { ThemeContext } from '../../ThemeContext';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -38,7 +40,7 @@ const options = {
     y: { 
       title: { 
         display: true, 
-        text: 'count',
+        text: 'Count',
         font: {
           size: 18,
           family: 'Helvetica Neue',
@@ -73,6 +75,9 @@ const options = {
 };
 
 const SpetrumChart = () => {
+  const {DarkTheme} = useContext(ThemeContext)
+
+
   var array = [];
   for (var i = 0; i < 4096; i++) {
     array.push(i);
@@ -81,7 +86,7 @@ const SpetrumChart = () => {
     labels: array,
     datasets: [
       {
-        label: 'Dataset',
+        label: '',
         data: [],
         borderColor: 'rgb(255, 99, 132)',
         backgroundColor: 'rgba(99, 132, 0.5)',
@@ -96,15 +101,14 @@ const SpetrumChart = () => {
         labels: array,
         datasets: [
           {
-            label: 'Dataset ID',
+            label: '',
             data: Dataset,
-            borderColor: 'rgb(255, 99, 132)',
+            borderColor: `${DarkTheme?'rgb(255, 99, 132)':'black'}` ,
             backgroundColor: 'rgba(99, 132, 0.5)',
           }
         ]
       })
-    }, []);
-    //   
+    });
   })
   return (
     <div className='analytics' style={{ width: '100%', height: '100%' }}>
